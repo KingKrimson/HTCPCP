@@ -1,0 +1,5 @@
+BREW pot-1 HTCPCP/1.0
+Content-Type:message/coffeepot
+Content-Length:5
+
+start
