@@ -94,7 +94,7 @@ int build_brew(char *response, char **line_list, int linecount, const int pot)
             "Coffee is already being brewed in pot-%i. "
             "You can stop it, but I doubt the original brewer will be "
             "happy.", pot);
-        return CONFLICT;        
+        return CONFLICT;
     } else {
         for (i = 0; i < linecount; ++i) {
             if (strstr(strtok(line_list[i], "#"), "Accept-Additions:")) {
@@ -234,7 +234,7 @@ int build_not_acceptable(char *response, const int pot)
 }
 
 /*******************************************************************************
-* check to see if the pot number in the packet is valid. If so, return the pot 
+* check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
 int build_im_a_teapot(char *response) {
@@ -246,7 +246,7 @@ int build_im_a_teapot(char *response) {
 }
 
 /*******************************************************************************
-* check to see if the pot number in the packet is valid. If so, return the pot 
+* check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
 int build_not_supported(char *response) {
@@ -259,7 +259,7 @@ int build_not_supported(char *response) {
 }
 
 /*******************************************************************************
-* check to see if the pot number in the packet is valid. If so, return the pot 
+* check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
 int valid_pot(char *pot)

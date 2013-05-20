@@ -6,9 +6,9 @@
 |   Project:    Client
 |   Created:    2013-03-18
 |
-|   Client_linux.c is a system specific implmentation of a client. It can 
-|   connect to a server, send messages, receive messages, and close the 
-|   connection. 
+|   Client_linux.c is a system specific implmentation of a client. It can
+|   connect to a server, send messages, receive messages, and close the
+|   connection.
 |
 \=============================================================================*/
 
@@ -18,11 +18,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 #include <unistd.h>
 
 #define MAXDATASIZE 100 /* max bytes to be received at once */
-
 
 /*******************************************************************************
 * Connects to the server. Takes the hostname and port number as parameters.
@@ -60,7 +59,6 @@ int connect_to_server(char *hostname, int port) {
 
     return sockfd;
 }
-
 
 /*******************************************************************************
 * Sends a message to the server specified by sockfd.

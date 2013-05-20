@@ -55,7 +55,7 @@ int init_server(int portnumber) {
     socklen_t sin_size; /* size of address structure */
     int yes = 1;
 
-    if((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("Server socket");
         exit( 1);
     }
@@ -73,7 +73,7 @@ int init_server(int portnumber) {
     server_addr.sin_addr.s_addr = INADDR_ANY; /* any server IP addr */
 
     /*bind the socket to this machine, and the specified port number*/
-    if(bind(listenfd, (struct sockaddr *)&server_addr,
+    if (bind(listenfd, (struct sockaddr *)&server_addr,
         sizeof(struct sockaddr)) == -1)
     {
         perror("Server bind");
@@ -81,7 +81,7 @@ int init_server(int portnumber) {
     }
 
     /*begin listening.*/
-    if(listen(listenfd, BACKLOG) == -1) {
+    if (listen(listenfd, BACKLOG) == -1) {
         perror("Server listen");
         exit(1);
     }
@@ -115,7 +115,7 @@ int run_server(int listenfd) {
     while(1) { /* main accept() loop */
         sin_size = sizeof(struct sockaddr_in);
 
-        if((connfd = accept(listenfd, (struct sockaddr *)&client_addr, 
+        if((connfd = accept(listenfd, (struct sockaddr *)&client_addr,
             &sin_size)) == -1) {
                 perror("Server accept");
                 continue;
@@ -143,8 +143,8 @@ int kill_server(int listenfd) {
 }
 
 /*******************************************************************************
-* The fork calls this method, which receives the clients packet, sends it to 
-* be processed, and then sends the returned reponse packet to the client. 
+* The fork calls this method, which receives the clients packet, sends it to
+* be processed, and then sends the returned reponse packet to the client.
 * It then dies.
 *******************************************************************************/
 void coffee_handler(int connfd) {

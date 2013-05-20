@@ -18,11 +18,11 @@
 
 DWORD WINAPI child(LPVOID);
 
-/******************************************************************************
+/*******************************************************************************
 * Initilises the server on the port specified by port.
-******************************************************************************/
+*******************************************************************************/
 SOCKET init_server(const int port)
-{    
+{
     WSADATA wsa_data;
     SOCKADDR_IN server_info;
     SOCKET server_socket;
@@ -42,15 +42,12 @@ SOCKET init_server(const int port)
     return server_socket;
 }
 
-/******************************************************************************
+/*******************************************************************************
 * Runs the server. listens for connections, and spawns children to deal with
 * clients.
-******************************************************************************/
+*******************************************************************************/
 int run_server(SOCKET socket)
 {
-    HANDLE thread;
-    SOCKET connection = SOCKET_ERROR;
-
 #if defined(_DEBUG)
     char packet[512];
     char response[512];
@@ -65,6 +62,9 @@ int run_server(SOCKET socket)
     printf(response);
     fclose(test_file);
 #else
+    SOCKET connection = SOCKET_ERROR;
+    HANDLE thread;
+
     printf("Waiting for incoming connections...\n");
     for (; ; )
     {
@@ -80,9 +80,9 @@ int run_server(SOCKET socket)
     return 0;
 }
 
-/******************************************************************************
+/*******************************************************************************
 * closes the server. Closes the socket the server was bound to.
-******************************************************************************/
+*******************************************************************************/
 int kill_server(SOCKET socket)
 {
     shutdown(socket, SD_SEND);
@@ -91,10 +91,10 @@ int kill_server(SOCKET socket)
     return 0;
 }
 
-/******************************************************************************
+/*******************************************************************************
 * The child receives the clients packet, sends it to be processed, and then
 * sends the returned reponse packet to the client. It then dies.
-******************************************************************************/
+*******************************************************************************/
 DWORD WINAPI child(LPVOID lParam) {
     int num_bytes;
     char packet[512];

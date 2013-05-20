@@ -36,7 +36,7 @@ SOCKET connect_to_server(char *hostname, int port)
 
     hResult = SOCKET_ERROR;
     do {
-        hResult = connect(Socket, (SOCKADDR*)(&sockaddr), sizeof(sockaddr));        
+        hResult = connect(Socket, (SOCKADDR*)(&sockaddr), sizeof(sockaddr));
     } while (hResult == SOCKET_ERROR);
 
     return Socket;

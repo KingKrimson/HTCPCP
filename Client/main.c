@@ -12,7 +12,7 @@
 |   the connection are in client_linux.c and client_win.c
 |
 |   The client accepts a method and uri as individual parameters. If the uri is
-|   entered, then it is processed, and a packet is build, once a method has 
+|   entered, then it is processed, and a packet is build, once a method has
 |   been chosen. If it's not entered, then the user can use a menu based system
 |   to build a packet. The method can be entered at the command line, or chosen
 |   in the menu.
@@ -36,7 +36,7 @@
 #define MAXHOSTNAMESIZE 15
 #define MAXPACKETSIZE 512
 #define MAXMETHODSIZE 8
-#ifndef MAXINT16 
+#ifndef MAXINT16
 #define MAXINT16 65535
 #endif
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
             strcpy(method, argv[++i]);
             continue;
         } else {
-            printf("usage: %s [-f \"file\"] | [[-m \"method\"] [- u \"URI\"]]", 
+            printf("usage: %s [-f \"file\"] | [[-m \"method\"] [- u \"URI\"]]",
                 argv[0]);
             exit(1);
         }
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
         if ((num_bytes = receive_message(sockfd, packet, MAXPACKETSIZE))) {
             packet[num_bytes] = '\0';
             printf("received: %s\n", packet);
-        }        
+        }
     } while (packet[0] == '\0');
 
     disconnect_from_server(sockfd);
@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
 }
 
 /*******************************************************************************
-* Processes the uri, if one is given. Finds the hostname, port, pot and 
+* Processes the uri, if one is given. Finds the hostname, port, pot and
 * additions, and saves them for use in craeting the packet.
 *******************************************************************************/
 int process_uri(char *uri, int *pot_number, char *additions, char *hostname,
@@ -336,7 +336,7 @@ int get_additions(char *additions) {
         case 'E':
             choose_alcohol(additions);
             break;
-        }  
+        }
     }
 }
 
@@ -395,7 +395,7 @@ int choose_sweetener(char *additions) {
     char choice[2];
     char amount;
 
-    do {        
+    do {
         printf("Please choose sweetener:\n");
         printf("A: White-sugar.\n");
         printf("B: Sweetener.\n");
@@ -423,7 +423,7 @@ int choose_sweetener(char *additions) {
         break;
     }
 
-    return 0; 
+    return 0;
 }
 
 int choose_syrup(char *additions) {
