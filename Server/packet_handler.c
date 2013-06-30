@@ -61,7 +61,6 @@ int process_packet(char *response, char *packet)
             }
         }
     }
-//#pragma warning(suppress: 6385)
     coffee_message_body = line_list[--line_count];
 
     /* check the packet's method, and build the appropriate response. */
