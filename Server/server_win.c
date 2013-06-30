@@ -27,18 +27,21 @@ SOCKET init_server(const int port)
     SOCKADDR_IN server_info;
     SOCKET server_socket;
 
-    WSAStartup(MAKEWORD(2, 2), &wsa_data);
-    server_socket = socket(AF_INET,SOCK_STREAM, IPPROTO_TCP);
+    if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0) {
+        return (SOCKET) NULL;
+    }
+    server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     ZeroMemory(&server_info, sizeof(SOCKADDR_IN));
     server_info.sin_family = AF_INET;
     server_info.sin_addr.s_addr = INADDR_ANY;
-    server_info.sin_port = htons(port);
+    server_info.sin_port = htons((u_short) port);
 
     bind(server_socket, (SOCKADDR*) (&server_info), sizeof(server_info));
     listen(server_socket, 1);
 
     InitializeCriticalSection(&critical_section);
+
     return server_socket;
 }
 
@@ -46,6 +49,8 @@ SOCKET init_server(const int port)
 * Runs the server. listens for connections, and spawns children to deal with
 * clients.
 *******************************************************************************/
+#pragma warning(push)
+#pragma warning(disable: 4100)
 int run_server(SOCKET socket)
 {
 #if defined(_DEBUG)
@@ -55,7 +60,7 @@ int run_server(SOCKET socket)
     FILE *test_file;
 
     test_file = fopen("test_packet.txt", "rb");
-    num_bytes = fread(packet, sizeof(char), 512, test_file);
+    num_bytes = fread(packet, sizeof(char) , 512, test_file);
     packet[num_bytes] = '\0';
     printf(packet);
     process_packet(response, packet);
@@ -79,6 +84,7 @@ int run_server(SOCKET socket)
 #endif
     return 0;
 }
+#pragma warning(pop)
 
 /*******************************************************************************
 * closes the server. Closes the socket the server was bound to.
@@ -95,7 +101,8 @@ int kill_server(SOCKET socket)
 * The child receives the clients packet, sends it to be processed, and then
 * sends the returned reponse packet to the client. It then dies.
 *******************************************************************************/
-DWORD WINAPI child(LPVOID lParam) {
+DWORD WINAPI child(LPVOID lParam)
+{
     int num_bytes;
     char packet[512];
     char response[512];

@@ -26,19 +26,21 @@
 /*******************************************************************************
 * Connects to the server. Takes the hostname and port number as parameters.
 *******************************************************************************/
-int connect_to_server(char *hostname, int port) {
+int connect_to_server(char *hostname, int port)
+{
     int sockfd;
     struct hostent *he;
     struct sockaddr_in their_addr; /* server address info */
 
     /* resolve server host name or IP address */
-    if(!(he = gethostbyname(hostname))) { /* host server info */
+    if (!(he = gethostbyname(hostname))) {
+        /* host server info */
         perror("Client gethostbyname");
         exit(1);
     }
 
     /*create the socket.*/
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("Client socket");
         exit(1);
     }
@@ -47,14 +49,13 @@ int connect_to_server(char *hostname, int port) {
     memset(&their_addr, 0, sizeof(their_addr)); /* zero all */
     their_addr.sin_family = AF_INET; /* host byte order .. */
     their_addr.sin_port = htons(port); /* .. short, network byte order */
-    their_addr.sin_addr = *((struct in_addr *)he -> h_addr);
+    their_addr.sin_addr = *((struct in_addr *)he->h_addr);
 
     /*connect to the server */
-    if(connect(sockfd, (struct sockaddr *)&their_addr,
-        sizeof(struct sockaddr)) == -1)
-    {
-        perror("Client connect");
-        exit(1);
+    if (connect(sockfd, (struct sockaddr *)&their_addr,
+        sizeof(struct sockaddr)) == -1) {
+            perror("Client connect");
+            exit(1);
     }
 
     return sockfd;

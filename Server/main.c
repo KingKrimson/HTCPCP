@@ -28,7 +28,8 @@
 
 int get_port(int *port);
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     uwe_socket socket;
     int port = 0;
     int i;

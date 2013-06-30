@@ -37,8 +37,7 @@ int process_packet(char *response, char *packet)
 
     if ((pot = valid_pot(strtok(NULL, " "))) == 0) {
         return build_not_found(response, pot);
-    }
-    else if (is_teapot(pot)) {
+    } else if (is_teapot(pot)) {
         return build_im_a_teapot(response);
     }
 
@@ -47,7 +46,11 @@ int process_packet(char *response, char *packet)
     }
 
     /* grab the rest of the lines. */
-    while (line_list[++line_count] = strtok(NULL, "\r\n"));
+    do {
+        ++line_count;
+        line_list[line_count] = strtok(NULL, "\r\n");
+    } while (line_list[line_count]);
+
     for (i = 0; i < line_count; ++i) {
         if (strstr(line_list[i], "Content-Length:")) {
             content_length = line_list[i];
@@ -58,6 +61,7 @@ int process_packet(char *response, char *packet)
             }
         }
     }
+//#pragma warning(suppress: 6385)
     coffee_message_body = line_list[--line_count];
 
     /* check the packet's method, and build the appropriate response. */
@@ -237,7 +241,8 @@ int build_not_acceptable(char *response, const int pot)
 * check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
-int build_im_a_teapot(char *response) {
+int build_im_a_teapot(char *response)
+{
     sprintf(response, "HTCPCP/1.0 418 Im A Teapot\r\n"
         "Content-Type:text/plain\r\n"
         "Content-Length:38\r\n\r\n"
@@ -249,7 +254,8 @@ int build_im_a_teapot(char *response) {
 * check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
-int build_not_supported(char *response) {
+int build_not_supported(char *response)
+{
     sprintf(response, "HTCPCP/1.0 505 HTCPCP Version Not Supported\r\n"
         "Content-Type:text/plain\r\n"
         "Content-Length:38\r\n\r\n"
@@ -269,7 +275,7 @@ int valid_pot(char *pot)
     };
 
     int i;
-    for (i = 0; i < (sizeof(pot_list) / sizeof(char*)); ++i) {
+    for (i = 0; i < (sizeof(pot_list) / sizeof(char*) ); ++i) {
         if (strcmp(pot, pot_list[i]) == 0) {
             return i + 1;
         }
@@ -289,7 +295,7 @@ int valid_addition_parameter(char *parameter)
     };
 
     int i;
-    for (i = 0; i < (sizeof(parameter_list) / sizeof(char*)); ++i) {
+    for (i = 0; i < (sizeof(parameter_list) / sizeof(char*) ); ++i) {
         if (strcmp(parameter, parameter_list[i]) == 0) {
             return 1;
         }
