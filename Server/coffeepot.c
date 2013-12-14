@@ -12,10 +12,10 @@
 #include "include/coffeepot.h"
 
 static coffeepot coffeepot_list[] = {
-    {0, 0, "Whole-milk, Part-skim, Skim"},
-    {0, 0, "Whole-milk, Part-skim, Skim, White-sugar, Sweetener"},
-    {0, 0, "Whole-milk, Part-skim, Skim, Vanilla, Chocolate"},
-    {0, 1, ""}
+    { 0, 0, "Whole-milk, Part-skim, Skim" },
+    { 0, 0, "Whole-milk, Part-skim, Skim, White-sugar, Sweetener" },
+    { 0, 0, "Whole-milk, Part-skim, Skim, Vanilla, Chocolate" },
+    { 0, 1, "" }
 };
 
 const int is_brewing(const int pot)

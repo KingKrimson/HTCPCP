@@ -274,7 +274,7 @@ int valid_pot(char *pot)
     };
 
     int i;
-    for (i = 0; i < (sizeof(pot_list) / sizeof(char*) ); ++i) {
+    for (i = 0; i < (sizeof(pot_list) / sizeof(char*)); ++i) {
         if (strcmp(pot, pot_list[i]) == 0) {
             return i + 1;
         }
@@ -294,7 +294,7 @@ int valid_addition_parameter(char *parameter)
     };
 
     int i;
-    for (i = 0; i < (sizeof(parameter_list) / sizeof(char*) ); ++i) {
+    for (i = 0; i < (sizeof(parameter_list) / sizeof(char*)); ++i) {
         if (strcmp(parameter, parameter_list[i]) == 0) {
             return 1;
         }

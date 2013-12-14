@@ -63,7 +63,7 @@ int init_server(int portnumber)
     }
 
     /* Set Unix socket level to allow address reuse */
-    if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int) ) == -1) {
+    if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
         perror("Server setsockopt");
         exit(1);
     }
@@ -77,8 +77,8 @@ int init_server(int portnumber)
     /*bind the socket to this machine, and the specified port number*/
     if (bind(listenfd, (struct sockaddr *)&server_addr,
         sizeof(struct sockaddr)) == -1) {
-            perror("Server bind");
-            exit(1);
+        perror("Server bind");
+        exit(1);
     }
 
     /*begin listening.*/
@@ -120,8 +120,8 @@ int run_server(int listenfd)
 
         if ((connfd = accept(listenfd, (struct sockaddr *)&client_addr,
             &sin_size)) == -1) {
-                perror("Server accept");
-                continue;
+            perror("Server accept");
+            continue;
         }
 
         strcpy(clientAddr, inet_ntoa(client_addr.sin_addr));

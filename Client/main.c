@@ -50,12 +50,12 @@ int main(int argc, char **argv)
     int num_bytes;
     coffee_socket sockfd;
     int port = 0;
-    char hostname[MAXHOSTNAMESIZE + 1] = {0};
-    char method[MAXMETHODSIZE + 1] = {0};
+    char hostname[MAXHOSTNAMESIZE + 1] = { 0 };
+    char method[MAXMETHODSIZE + 1] = { 0 };
     int pot_number = 0;
-    char additions[400] = {0};
+    char additions[400] = { 0 };
     char message[80];
-    char packet[MAXPACKETSIZE + 1] = {0};
+    char packet[MAXPACKETSIZE + 1] = { 0 };
     int i;
 
     /*check the arguments*/

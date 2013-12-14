@@ -60,7 +60,7 @@ int run_server(SOCKET socket)
     FILE *test_file;
 
     test_file = fopen("test_packet.txt", "rb");
-    num_bytes = fread(packet, sizeof(char) , 512, test_file);
+    num_bytes = fread(packet, sizeof(char), 512, test_file);
     packet[num_bytes] = '\0';
     printf(packet);
     process_packet(response, packet);
