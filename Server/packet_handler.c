@@ -37,8 +37,7 @@ int process_packet(char *response, char *packet)
 
     if ((pot = valid_pot(strtok(NULL, " "))) == 0) {
         return build_not_found(response, pot);
-    }
-    else if (is_teapot(pot)) {
+    } else if (is_teapot(pot)) {
         return build_im_a_teapot(response);
     }
 
@@ -47,7 +46,11 @@ int process_packet(char *response, char *packet)
     }
 
     /* grab the rest of the lines. */
-    while (line_list[++line_count] = strtok(NULL, "\r\n"));
+    do {
+        ++line_count;
+        line_list[line_count] = strtok(NULL, "\r\n");
+    } while (line_list[line_count]);
+
     for (i = 0; i < line_count; ++i) {
         if (strstr(line_list[i], "Content-Length:")) {
             content_length = line_list[i];
@@ -94,7 +97,7 @@ int build_brew(char *response, char **line_list, int linecount, const int pot)
             "Coffee is already being brewed in pot-%i. "
             "You can stop it, but I doubt the original brewer will be "
             "happy.", pot);
-        return CONFLICT;        
+        return CONFLICT;
     } else {
         for (i = 0; i < linecount; ++i) {
             if (strstr(strtok(line_list[i], "#"), "Accept-Additions:")) {
@@ -234,10 +237,11 @@ int build_not_acceptable(char *response, const int pot)
 }
 
 /*******************************************************************************
-* check to see if the pot number in the packet is valid. If so, return the pot 
+* check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
-int build_im_a_teapot(char *response) {
+int build_im_a_teapot(char *response)
+{
     sprintf(response, "HTCPCP/1.0 418 Im A Teapot\r\n"
         "Content-Type:text/plain\r\n"
         "Content-Length:38\r\n\r\n"
@@ -246,10 +250,11 @@ int build_im_a_teapot(char *response) {
 }
 
 /*******************************************************************************
-* check to see if the pot number in the packet is valid. If so, return the pot 
+* check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
-int build_not_supported(char *response) {
+int build_not_supported(char *response)
+{
     sprintf(response, "HTCPCP/1.0 505 HTCPCP Version Not Supported\r\n"
         "Content-Type:text/plain\r\n"
         "Content-Length:38\r\n\r\n"
@@ -259,7 +264,7 @@ int build_not_supported(char *response) {
 }
 
 /*******************************************************************************
-* check to see if the pot number in the packet is valid. If so, return the pot 
+* check to see if the pot number in the packet is valid. If so, return the pot
 * number. If not, return 0.
 *******************************************************************************/
 int valid_pot(char *pot)

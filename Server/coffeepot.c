@@ -12,13 +12,14 @@
 #include "include/coffeepot.h"
 
 static coffeepot coffeepot_list[] = {
-    {0, 0, "Whole-milk, Part-skim, Skim"},
-    {0, 0, "Whole-milk, Part-skim, Skim, White-sugar, Sweetener"},
-    {0, 0, "Whole-milk, Part-skim, Skim, Vanilla, Chocolate"},
-    {0, 1, ""}
+    { 0, 0, "Whole-milk, Part-skim, Skim" },
+    { 0, 0, "Whole-milk, Part-skim, Skim, White-sugar, Sweetener" },
+    { 0, 0, "Whole-milk, Part-skim, Skim, Vanilla, Chocolate" },
+    { 0, 1, "" }
 };
 
-const int is_brewing(const int pot) {
+const int is_brewing(const int pot)
+{
     int val;
 #if defined(_WIN32)
     EnterCriticalSection(&critical_section);
@@ -30,15 +31,18 @@ const int is_brewing(const int pot) {
     return val;
 }
 
-const int is_teapot(const int pot) {
+const int is_teapot(const int pot)
+{
     return coffeepot_list[pot - 1].teapot;
 }
 
-const char *const get_additions(const int pot) {
+const char *const get_additions(const int pot)
+{
     return coffeepot_list[pot - 1].additions;
 }
 
-const int set_brewing(const int pot, const int val) {
+const int set_brewing(const int pot, const int val)
+{
 #if defined(_WIN32)
     EnterCriticalSection(&critical_section);
 #endif

@@ -22,13 +22,14 @@
 #endif
 
 #define DEFAULTPORT 8000
-#ifndef MAXINT16 
+#ifndef MAXINT16
 #define MAXINT16 65535
 #endif
 
 int get_port(int *port);
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     uwe_socket socket;
     int port = 0;
     int i;
@@ -52,7 +53,6 @@ int main(int argc, char **argv) {
     kill_server(socket);
     return 0;
 }
-
 
 int get_port(int *port)
 {

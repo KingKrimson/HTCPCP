@@ -19,27 +19,30 @@
 *******************************************************************************/
 SOCKET connect_to_server(char *hostname, int port)
 {
-    WSADATA WsaDat;
-    SOCKADDR_IN sockaddr;
-    SOCKET Socket;
+    WSADATA wsa_data;
+    SOCKADDR_IN socket_address;
+    SOCKET client_socket;
     struct hostent *host;
-    int hResult;
+    int result;
 
-    WSAStartup(MAKEWORD(2, 2), &WsaDat);
-    Socket = socket(AF_INET,SOCK_STREAM, IPPROTO_TCP);
+    if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0) {
+        return (SOCKET) NULL;
+    }
+    client_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     host = gethostbyname(hostname);
 
-    ZeroMemory(&sockaddr, sizeof(SOCKADDR_IN));
-    sockaddr.sin_family = AF_INET;
-    sockaddr.sin_addr.s_addr = *((unsigned long*)host->h_addr);
-    sockaddr.sin_port = htons(port);
+    ZeroMemory(&socket_address, sizeof(SOCKADDR_IN));
+    socket_address.sin_family = AF_INET;
+    socket_address.sin_addr.s_addr = *((unsigned long *) host->h_addr);
+    socket_address.sin_port = htons((u_short) port);
 
-    hResult = SOCKET_ERROR;
+    result = SOCKET_ERROR;
     do {
-        hResult = connect(Socket, (SOCKADDR*)(&sockaddr), sizeof(sockaddr));        
-    } while (hResult == SOCKET_ERROR);
+        result = connect(client_socket, (SOCKADDR*) (&socket_address),
+            sizeof(socket_address));
+    } while (result == SOCKET_ERROR);
 
-    return Socket;
+    return client_socket;
 }
 
 /*******************************************************************************

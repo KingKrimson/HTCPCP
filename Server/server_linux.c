@@ -30,15 +30,16 @@
 /*******************************************************************************
 * Handles signals from dying children.
 *******************************************************************************/
-void sigchld_handler(int s) {
+void sigchld_handler(int s)
+{
     int exit;
 
     if ((wait(&s)) == -1) /* wait for any child to finish */
         exit = WIFEXITED(s);
-    if(exit) {
-        if(WEXITSTATUS(s) != 0) {
+    if (exit) {
+        if (WEXITSTATUS(s) != 0) {
             printf("Child encountered an error and terminated normally.\n");
-        } else if(WEXITSTATUS(s) == 0) {
+        } else if (WEXITSTATUS(s) == 0) {
             printf("Child terminated normally\n");
         }
     } else {
@@ -49,19 +50,20 @@ void sigchld_handler(int s) {
 /*******************************************************************************
 * Initilises the server on the port specified by portnumber.
 *******************************************************************************/
-int init_server(int portnumber) {
+int init_server(int portnumber)
+{
     int listenfd; /* listening socket */
     struct sockaddr_in server_addr; /* info for my addr i.e. server */
     socklen_t sin_size; /* size of address structure */
     int yes = 1;
 
-    if((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("Server socket");
-        exit( 1);
+        exit(1);
     }
 
     /* Set Unix socket level to allow address reuse */
-    if(setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
+    if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
         perror("Server setsockopt");
         exit(1);
     }
@@ -73,15 +75,14 @@ int init_server(int portnumber) {
     server_addr.sin_addr.s_addr = INADDR_ANY; /* any server IP addr */
 
     /*bind the socket to this machine, and the specified port number*/
-    if(bind(listenfd, (struct sockaddr *)&server_addr,
-        sizeof(struct sockaddr)) == -1)
-    {
+    if (bind(listenfd, (struct sockaddr *)&server_addr,
+        sizeof(struct sockaddr)) == -1) {
         perror("Server bind");
         exit(1);
     }
 
     /*begin listening.*/
-    if(listen(listenfd, BACKLOG) == -1) {
+    if (listen(listenfd, BACKLOG) == -1) {
         perror("Server listen");
         exit(1);
     }
@@ -95,36 +96,39 @@ int init_server(int portnumber) {
 * Runs the server. listens for connections, and spawns children to deal with
 * clients.
 *******************************************************************************/
-int run_server(int listenfd) {
+int run_server(int listenfd)
+{
     struct sigaction sa; /* deal with signals from dying children! */
     int connfd; /* connection socket */
     struct sockaddr_in client_addr; /* client's address info */
     socklen_t sin_size; /* size of address structure */
-    char clientAddr[ 20]; /* holds ascii dotted quad address */
+    char clientAddr[20]; /* holds ascii dotted quad address */
 
     /* Signal handler stuff */
     sa.sa_handler = sigchld_handler; /* reap all dead processes */
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
 
-    if(sigaction(SIGCHLD, &sa, NULL) == -1) {
+    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
         perror("Server sigaction");
         exit(1);
     }
 
-    while(1) { /* main accept() loop */
+    while (1) {
+        /* main accept() loop */
         sin_size = sizeof(struct sockaddr_in);
 
-        if((connfd = accept(listenfd, (struct sockaddr *)&client_addr, 
+        if ((connfd = accept(listenfd, (struct sockaddr *)&client_addr,
             &sin_size)) == -1) {
-                perror("Server accept");
-                continue;
+            perror("Server accept");
+            continue;
         }
 
         strcpy(clientAddr, inet_ntoa(client_addr.sin_addr));
         printf("Server: got connection from %s\n", clientAddr);
 
-        if(!fork()) { /* the child process dealing with a client */
+        if (!fork()) {
+            /* the child process dealing with a client */
             close(listenfd); /*child does not need listener*/
             coffee_handler(connfd);
         } /* fork() */
@@ -137,24 +141,26 @@ int run_server(int listenfd) {
 /*******************************************************************************
 * Kills the server by closing listenfd.
 *******************************************************************************/
-int kill_server(int listenfd) {
+int kill_server(int listenfd)
+{
     close(listenfd);
     return 0;
 }
 
 /*******************************************************************************
-* The fork calls this method, which receives the clients packet, sends it to 
-* be processed, and then sends the returned reponse packet to the client. 
+* The fork calls this method, which receives the clients packet, sends it to
+* be processed, and then sends the returned reponse packet to the client.
 * It then dies.
 *******************************************************************************/
-void coffee_handler(int connfd) {
+void coffee_handler(int connfd)
+{
     char packet[MAXDATASIZE];
     char response[MAXDATASIZE];
     int numbytes;
 
     packet[0] = '\0'; /* no message yet! */
 
-    if((numbytes = recv(connfd, packet, MAXDATASIZE -1, 0)) == -1) {
+    if ((numbytes = recv(connfd, packet, MAXDATASIZE - 1, 0)) == -1) {
         perror("Server recv");
         exit(1); /* error end of child */
     }
@@ -166,7 +172,7 @@ void coffee_handler(int connfd) {
     /*process the packet*/
     process_packet(response, packet);
 
-    if(send(connfd, response, strlen(response), 0) == -1) {
+    if (send(connfd, response, strlen(response), 0) == -1) {
         perror("Server send");
         exit(1); /* error end of child */
     }

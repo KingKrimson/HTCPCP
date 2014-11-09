@@ -12,7 +12,7 @@
 |   the connection are in client_linux.c and client_win.c
 |
 |   The client accepts a method and uri as individual parameters. If the uri is
-|   entered, then it is processed, and a packet is build, once a method has 
+|   entered, then it is processed, and a packet is build, once a method has
 |   been chosen. If it's not entered, then the user can use a menu based system
 |   to build a packet. The method can be entered at the command line, or chosen
 |   in the menu.
@@ -36,7 +36,7 @@
 #define MAXHOSTNAMESIZE 15
 #define MAXPACKETSIZE 512
 #define MAXMETHODSIZE 8
-#ifndef MAXINT16 
+#ifndef MAXINT16
 #define MAXINT16 65535
 #endif
 
@@ -45,16 +45,17 @@
 * way the packet is built depends on whether the URI and method have been
 * specified in the command line arguments.
 *******************************************************************************/
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     int num_bytes;
     coffee_socket sockfd;
     int port = 0;
-    char hostname[MAXHOSTNAMESIZE + 1] = {0};
-    char method[MAXMETHODSIZE + 1] = {0};
+    char hostname[MAXHOSTNAMESIZE + 1] = { 0 };
+    char method[MAXMETHODSIZE + 1] = { 0 };
     int pot_number = 0;
-    char additions[400] = {0};
+    char additions[400] = { 0 };
     char message[80];
-    char packet[MAXPACKETSIZE + 1] = {0};
+    char packet[MAXPACKETSIZE + 1] = { 0 };
     int i;
 
     /*check the arguments*/
@@ -70,7 +71,7 @@ int main(int argc, char **argv) {
             strcpy(method, argv[++i]);
             continue;
         } else {
-            printf("usage: %s [-f \"file\"] | [[-m \"method\"] [- u \"URI\"]]", 
+            printf("usage: %s [-f \"file\"] | [[-m \"method\"] [- u \"URI\"]]",
                 argv[0]);
             exit(1);
         }
@@ -110,16 +111,18 @@ int main(int argc, char **argv) {
     sockfd = connect_to_server(hostname, port);
 
     /*send the packet*/
-    if (num_bytes = send_message(sockfd, packet) == 0) {
+    num_bytes = send_message(sockfd, packet);
+    if (num_bytes == 0) {
         printf("Failed to send message %s", packet);
     }
 
     /*wait for response*/
     do {
-        if ((num_bytes = receive_message(sockfd, packet, MAXPACKETSIZE))) {
+        num_bytes = receive_message(sockfd, packet, MAXPACKETSIZE);
+        if (num_bytes != 0) {
             packet[num_bytes] = '\0';
             printf("received: %s\n", packet);
-        }        
+        }
     } while (packet[0] == '\0');
 
     disconnect_from_server(sockfd);
@@ -127,11 +130,11 @@ int main(int argc, char **argv) {
 }
 
 /*******************************************************************************
-* Processes the uri, if one is given. Finds the hostname, port, pot and 
+* Processes the uri, if one is given. Finds the hostname, port, pot and
 * additions, and saves them for use in craeting the packet.
 *******************************************************************************/
 int process_uri(char *uri, int *pot_number, char *additions, char *hostname,
-                int *port)
+    int *port)
 {
     static const char *coffee_scheme_list[] = {
         "test", "koffie", "q%C3%A6hv%C3%A6", "%D9%82%D9%87%D9%88%D8%A9",
@@ -149,7 +152,7 @@ int process_uri(char *uri, int *pot_number, char *additions, char *hostname,
     int i;
 
     coffee_scheme = strtok(uri, ":");
-    for (i = 0; i < (sizeof(coffee_scheme_list) / sizeof(char*)); ++i) {
+    for (i = 0; i < (sizeof(coffee_scheme_list) / sizeof(char*) ); ++i) {
         if (strcmp(coffee_scheme, coffee_scheme_list[i]) == 0) {
             break;
         }
@@ -161,14 +164,18 @@ int process_uri(char *uri, int *pot_number, char *additions, char *hostname,
     host = strtok(NULL, "/");
     *pot_number = (strtok(NULL, "?")[4] - '0');
 
-    while (addition = strtok(NULL, "#&")) {
-        strcat(additions, "Accept-Additions:#");
-        strcat(additions, addition);
-        strcat(additions, "\r\n");
-    }
+    do {
+        addition = strtok(NULL, "#&");
+        if (addition) {
+            strcat(additions, "Accept-Additions:#");
+            strcat(additions, addition);
+            strcat(additions, "\r\n");
+        }
+    } while (addition);
 
     strcpy(hostname, strtok(host, ":"));
-    *port = (port_string = strtok(NULL, "")) ? atoi(port_string) : DEFAULTPORT;
+    port_string = strtok(NULL, "");
+    *port = (port_string) ? atoi(port_string) : DEFAULTPORT;
     return 0;
 }
 
@@ -227,7 +234,7 @@ int get_method(char *method)
         printf("> ");
         scanf("%1s", choice);
         while (getchar() != '\n');
-        choice[0] = toupper(choice[0]);
+        choice[0] = (char) toupper(choice[0]);
         printf("\n");
     } while (choice[0] < 'A' || choice[0] > 'C');
 
@@ -267,7 +274,8 @@ int get_pot_number()
 /*******************************************************************************
 * If BREW has been chosen, choose which message body to send to the server.
 *******************************************************************************/
-int get_message(char *message) {
+int get_message(char *message)
+{
     char choice[2];
 
     do {
@@ -277,7 +285,7 @@ int get_message(char *message) {
         printf("> ");
         scanf("%1s", choice);
         while (getchar() != '\n');
-        choice[0] = toupper(choice[0]);
+        choice[0] = (char) toupper(choice[0]);
         printf("\n");
     } while (choice[0] < 'A' || choice[0] > 'B');
 
@@ -297,10 +305,11 @@ int get_message(char *message) {
 /*******************************************************************************
 * a series of menu based functions that allow the user to choose additions.
 *******************************************************************************/
-int get_additions(char *additions) {
+int get_additions(char *additions)
+{
     char choice[2];
 
-    for (; ; ) {
+    for (;;) {
         do {
             printf("Please choose additions:\n");
             printf("A: Milk.\n");
@@ -312,7 +321,7 @@ int get_additions(char *additions) {
             printf("> ");
             scanf("%1s", choice);
             while (getchar() != '\n');
-            choice[0] = toupper(choice[0]);
+            choice[0] = (char) toupper(choice[0]);
             printf("\n");
 
             if (choice[0] == 'X') {
@@ -336,11 +345,12 @@ int get_additions(char *additions) {
         case 'E':
             choose_alcohol(additions);
             break;
-        }  
+        }
     }
 }
 
-int choose_milk(char *additions) {
+int choose_milk(char *additions)
+{
     char choice[2];
     char amount;
 
@@ -356,7 +366,7 @@ int choose_milk(char *additions) {
         printf("> ");
         scanf("%1s", choice);
         while (getchar() != '\n');
-        choice[0] = toupper(choice[0]);
+        choice[0] = (char) toupper(choice[0]);
         printf("\n");
 
         if (choice[0] == 'X') {
@@ -391,11 +401,12 @@ int choose_milk(char *additions) {
     return 0;
 }
 
-int choose_sweetener(char *additions) {
+int choose_sweetener(char *additions)
+{
     char choice[2];
     char amount;
 
-    do {        
+    do {
         printf("Please choose sweetener:\n");
         printf("A: White-sugar.\n");
         printf("B: Sweetener.\n");
@@ -403,7 +414,7 @@ int choose_sweetener(char *additions) {
         printf("> ");
         scanf("%1s", choice);
         while (getchar() != '\n');
-        choice[0] = toupper(choice[0]);
+        choice[0] = (char) toupper(choice[0]);
         printf("\n");
 
         if (choice[0] == 'X') {
@@ -423,10 +434,11 @@ int choose_sweetener(char *additions) {
         break;
     }
 
-    return 0; 
+    return 0;
 }
 
-int choose_syrup(char *additions) {
+int choose_syrup(char *additions)
+{
     char choice[2];
     char amount;
 
@@ -439,7 +451,7 @@ int choose_syrup(char *additions) {
         printf("> ");
         scanf("%1s", choice);
         while (getchar() != '\n');
-        choice[0] = toupper(choice[0]);
+        choice[0] = (char) toupper(choice[0]);
         printf("\n");
 
         if (choice[0] == 'X') {
@@ -464,7 +476,8 @@ int choose_syrup(char *additions) {
     return 0;
 }
 
-int choose_spice(char *additions) {
+int choose_spice(char *additions)
+{
     char choice[2];
     char amount;
 
@@ -476,7 +489,7 @@ int choose_spice(char *additions) {
         printf("> ");
         scanf("%1s", choice);
         while (getchar() != '\n');
-        choice[0] = toupper(choice[0]);
+        choice[0] = (char) toupper(choice[0]);
         printf("\n");
 
         if (choice[0] == 'X') {
@@ -498,7 +511,8 @@ int choose_spice(char *additions) {
     return 0;
 }
 
-int choose_alcohol(char *additions) {
+int choose_alcohol(char *additions)
+{
     char choice[2];
     char amount;
 
@@ -511,7 +525,7 @@ int choose_alcohol(char *additions) {
         printf("> ");
         scanf("%1s", choice);
         while (getchar() != '\n');
-        choice[0] = toupper(choice[0]);
+        choice[0] = (char) toupper(choice[0]);
         printf("\n");
 
         if (choice[0] == 'X') {
@@ -539,7 +553,8 @@ int choose_alcohol(char *additions) {
 /*******************************************************************************
 * a menu based way to addition amount.
 *******************************************************************************/
-char choose_amount(char min, char max) {
+char choose_amount(char min, char max)
+{
     char amount[2];
 
     do {
